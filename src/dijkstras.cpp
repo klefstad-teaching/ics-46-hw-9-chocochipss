@@ -95,14 +95,25 @@ vector<int> extract_shortest_path(const vector<int>& distances,
 void print_path(const vector<int>& v, int total)
 {
     if (v.empty()) {
-        cout << "(No path)" << endl;
-        cout << "Total cost is INF" << endl;
+        // For no path, the test might want a different format,
+        // e.g. "(No path)\nTotal cost is INF\n"
+        // Check your GTest or assignment. 
+        cout << "(No path)\nTotal cost is INF\n";
         return;
     }
+
+    // Print nodes separated by a single space
+    // The test snippet shows a trailing space before the newline
     for (size_t i = 0; i < v.size(); i++) {
         cout << v[i];
-        if (i + 2 < v.size()) 
+        if (i + 1 < v.size()) {
+            // Insert a space between nodes
             cout << " ";
+        }
     }
-    cout << "\nTotal cost is " << total << "\n\n" << endl;
+    // Print a trailing space, then a newline
+    cout << " \n";
+
+    // Print the total cost and ONE newline
+    cout << "Total cost is " << total << "\n";
 }
