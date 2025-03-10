@@ -18,16 +18,13 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    // Let's pick 0 as the source, as specified
+    
     int source = 0;
 
-    // Dijkstra
     vector<int> previous; 
     vector<int> dist = dijkstra_shortest_path(G, source, previous);
-
-    // For each vertex from 0..N-1, print path + cost
+    
     for (int v = 0; v < G.numVertices; v++) {
-        // Reconstruct path from source to v
         vector<int> path = extract_shortest_path(dist, previous, v);
         cout << "Path to " << v << ":\n";
         print_path(path, (dist[v] == INF) ? -1 : dist[v]);

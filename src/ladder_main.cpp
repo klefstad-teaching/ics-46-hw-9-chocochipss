@@ -2,12 +2,8 @@
 using namespace std;
 
 int main() {
-    // Load dictionary
     set<string> word_list;
     load_words(word_list, "words.txt");
-
-    // Possibly run some tests
-    // verify_word_ladder();
 
     cout << "Enter start word: ";
     string start;
@@ -16,7 +12,6 @@ int main() {
     string end;
     cin >> end;
 
-    // Generate ladder
     vector<string> ladder = generate_word_ladder(start, end, word_list);
 
     print_word_ladder(ladder);
