@@ -1,5 +1,5 @@
 #include "dijkstras.h"
-
+#include <climits>  
 using namespace std;
 
 /**
