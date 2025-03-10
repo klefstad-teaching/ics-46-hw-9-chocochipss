@@ -83,53 +83,67 @@ bool is_adjacent(const string& word1, const string& word2) {
  *  3. Keep a visited set<string> so we don't re-use words 
  *  4. Return the first ladder that reaches end_word or empty if none
  */
-vector<string> generate_word_ladder(const string& begin_word, 
-                                    const string& end_word, 
-                                    const set<string>& word_list)
+vector<string> generate_word_ladder(const string &begin_word,
+                                    const string &end_word,
+                                    const set<string> &word_list)
 {
-    // Edge case check
+    // 1) Quick checks
     if (begin_word == end_word) {
-        // Possibly do: error(begin_word, end_word, "Start equals end");
-        return { begin_word }; 
+        return { begin_word };
+    }
+    if (word_list.find(end_word) == word_list.end()) {
+        // No possible ladder
+        return {};
     }
 
-    // BFS data structures
-    queue< vector<string> > ladderQueue; 
-    ladderQueue.push({ begin_word });
+    // 2) Build length_map
+    unordered_map<int, vector<string>> length_map;
+    for (auto &w : word_list) {
+        length_map[w.size()].push_back(w);
+    }
 
-    // visited tracks dictionary words we've used 
-    // (we do not require begin_word to be in dictionary).
-    set<string> visited; 
-    // If begin_word is in dict, we mark it visited; 
-    // if it's not in dict, it's effectively "used" as well, so no duplicates.
-    visited.insert(begin_word);
-    
+    // 3) BFS
+    queue<vector<string>> q;
+    q.push({begin_word});
 
-    while (!ladderQueue.empty()) {
-        vector<string> ladder = ladderQueue.front();
-        ladderQueue.pop();
-        // The last word in the current ladder
-        string last_word = ladder.back();
+    unordered_set<string> visited;
+    visited.insert(begin_word); // always mark the start
 
-        // We'll search potential neighbors in word_list
-        // Because word_list can be large, you might want a more optimized approach,
-        // but naive is okay for moderate data sizes. 
-        // Check each dictionary word to see if it's 1 edit away from last_word
-        for (auto & w : word_list) {
-            if (visited.count(w) == 0) {
-                if (is_adjacent(last_word, w)) {
-                    // Found a neighbor
-                    vector<string> new_ladder = ladder;
-                    new_ladder.push_back(w);
-                    visited.insert(w); // mark it used
+    while (!q.empty()) {
+        auto ladder = q.front();
+        q.pop();
+        const string &last = ladder.back();
+        int L = last.size();
 
-                    if (w == end_word) {
-                        // Found a solution!
-                        return new_ladder;
-                    } else {
-                        ladderQueue.push(new_ladder);
-                    }
+        // gather candidates: length_map[L], length_map[L+1], length_map[L-1]
+        vector<string> candidates;
+        if (length_map.find(L) != length_map.end()) {
+            candidates.insert(candidates.end(),
+                              length_map[L].begin(),
+                              length_map[L].end());
+        }
+        if (length_map.find(L+1) != length_map.end()) {
+            candidates.insert(candidates.end(),
+                              length_map[L+1].begin(),
+                              length_map[L+1].end());
+        }
+        if (L > 0 && length_map.find(L-1) != length_map.end()) {
+            candidates.insert(candidates.end(),
+                              length_map[L-1].begin(),
+                              length_map[L-1].end());
+        }
+
+        // Check adjacency
+        for (auto &w : candidates) {
+            if (!visited.count(w) && is_adjacent(last, w)) {
+                visited.insert(w);
+                auto new_ladder = ladder;
+                new_ladder.push_back(w);
+
+                if (w == end_word) {
+                    return new_ladder;
                 }
+                q.push(new_ladder);
             }
         }
     }
@@ -137,6 +151,7 @@ vector<string> generate_word_ladder(const string& begin_word,
     // No ladder found
     return {};
 }
+
 
 /**
  * @brief Load words from a file into a set<string>.
