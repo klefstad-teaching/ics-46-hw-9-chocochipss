@@ -25,15 +25,15 @@ void error(string word1, string word2, string msg) {
  *        2) If lengths differ by 1, check if you can insert or remove 1 char
  *        3) If lengths are same, check if exactly 1 char differs
  */
-bool edit_distance_within(const std::string& s1, const std::string& s2, int d) {
-    // Quick length check
-    int len1 = (int)s1.size();
-    int len2 = (int)s2.size();
-    if (abs(len1 - len2) > d) {
+bool edit_distance_within(const std::string &s1, const std::string &s2, int d)
+{
+    // 1) Quick check on length difference
+    int len1 = (int)s1.size(), len2 = (int)s2.size();
+    if (std::abs(len1 - len2) > d) {
         return false; 
     }
 
-    // CASE 1: Same length => check if exactly 1 substitution
+    // 2) If lengths are equal: count mismatches
     if (len1 == len2) {
         int diffCount = 0;
         for (int i = 0; i < len1; i++) {
@@ -42,34 +42,30 @@ bool edit_distance_within(const std::string& s1, const std::string& s2, int d) {
                 if (diffCount > d) return false;
             }
         }
-        return (diffCount == d); 
+        // Now diffCount <= d => return true
+        return (diffCount <= d);
     }
 
-    // CASE 2: length differs by 1 => check insertion/deletion
-    // We'll ensure s1 is the shorter (or equal)
-    const string& shorter = (len1 < len2) ? s1 : s2;
-    const string& longer  = (len1 < len2) ? s2 : s1;
+    // 3) If lengths differ by 1 => check insertion/deletion within distance d
+    // e.g. "cat" and "at", "cat" and "chat", etc.
+    const std::string &shorter = (len1 < len2) ? s1 : s2;
+    const std::string &longer  = (len1 < len2) ? s2 : s1;
 
-    int i = 0, j = 0;
-    int mismatchCount = 0;
+    int i = 0, j = 0, mismatch = 0;
     while (i < (int)shorter.size() && j < (int)longer.size()) {
         if (shorter[i] != longer[j]) {
-            mismatchCount++;
-            if (mismatchCount > d) return false;
-            j++; // skip one char in longer
+            mismatch++;
+            if (mismatch > d) return false;
+            j++; 
         } else {
-            i++;
-            j++;
+            i++; 
+            j++; 
         }
     }
-    // If we exit the loop, we might have leftover in "longer" 
-    // but it can only be 1 leftover char to still be within distance 1
-    // So mismatch is mismatchCount + leftover
-    // leftover = (longer.size() - j)
-    mismatchCount += (longer.size() - j);
-
-    return (mismatchCount == d);
+    mismatch += (longer.size() - j);  // leftover chars in longer
+    return (mismatch <= d);
 }
+
 
 /**
  * @brief Return true if word1 and word2 differ by exactly 1 "edit operation".
@@ -167,17 +163,21 @@ void load_words(set<string> & word_list, const string& file_name) {
 /**
  * @brief Print out the ladder separated by spaces
  */
-void print_word_ladder(const vector<string>& ladder) {
+void print_word_ladder(const vector<string> &ladder) {
     if (ladder.empty()) {
-        cout << "(No ladder found)" << endl;
+        // The test wants exactly:
+        cout << "No word ladder found.\n";
         return;
     }
-    for (size_t i = 0; i < ladder.size(); i++) {
-        cout << ladder[i];
-        if (i + 1 < ladder.size()) cout << " -> ";
+    // The test wants:
+    // "Word ladder found: w1 w2 w3 ... \n"
+    cout << "Word ladder found:";
+    for (auto &w : ladder) {
+        cout << " " << w;
     }
-    cout << endl;
+    cout << " \n";
 }
+
 
 /**
  * @brief Example test harness to ensure the code works.
