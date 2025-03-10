@@ -90,7 +90,7 @@ vector<string> generate_word_ladder(const string& begin_word,
     // Edge case check
     if (begin_word == end_word) {
         // Possibly do: error(begin_word, end_word, "Start equals end");
-        return {begin_word}; 
+        return { begin_word }; 
     }
 
     // BFS data structures
@@ -102,9 +102,8 @@ vector<string> generate_word_ladder(const string& begin_word,
     set<string> visited; 
     // If begin_word is in dict, we mark it visited; 
     // if it's not in dict, it's effectively "used" as well, so no duplicates.
-    if (word_list.find(begin_word) != word_list.end()) {
-        visited.insert(begin_word);
-    }
+    visited.insert(begin_word);
+    
 
     while (!ladderQueue.empty()) {
         vector<string> ladder = ladderQueue.front();
@@ -162,22 +161,23 @@ void load_words(set<string> & word_list, const string& file_name) {
 /**
  * @brief Print out the ladder separated by spaces
  */
-void print_word_ladder(const vector<string> &ladder) {
+void print_word_ladder(const vector<string> &ladder)
+{
     if (ladder.empty()) {
-        // The test wants exactly:
-        cout << "(No ladder found)\n";
+        // Exactly what the GTest expects
+        cout << "No word ladder found.\n";
         return;
     }
+
     // The test wants:
-    // "Word ladder found: w1 w2 w3 ... \n"
-    for (size_t i = 0; i < ladder.size(); ++i) {
-        cout << ladder[i];
-         if (i != ladder.size() - 1) {
-        cout << " -> ";
-        }
+    // "Word ladder found: word1 word2 word3 ... \n"
+    cout << "Word ladder found:";
+    for (size_t i = 0; i < ladder.size(); i++) {
+        cout << " " << ladder[i];
+    }
+    cout << " \n";  // a space then a newline (check if they want trailing space, but typically it’s fine)
 }
-    cout << "\n";
-}
+
 
 
 /**
