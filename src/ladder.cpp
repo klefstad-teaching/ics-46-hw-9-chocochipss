@@ -90,7 +90,7 @@ vector<string> generate_word_ladder(const string &begin_word,
 {
     // 1) Quick checks
     if (begin_word == end_word) {
-        return { begin_word };
+        return {};
     }
     if (word_list.find(end_word) == word_list.end()) {
         // No possible ladder
