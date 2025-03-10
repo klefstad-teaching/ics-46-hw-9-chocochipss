@@ -19,8 +19,6 @@ int main() {
     // Generate ladder
     vector<string> ladder = generate_word_ladder(start, end, word_list);
 
-    // Print
-    cout << "Word ladder: ";
     print_word_ladder(ladder);
 
     return 0;

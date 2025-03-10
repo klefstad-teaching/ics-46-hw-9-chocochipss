@@ -101,7 +101,8 @@ void print_path(const vector<int>& v, int total)
     }
     for (size_t i = 0; i < v.size(); i++) {
         cout << v[i];
-        if (i + 1 < v.size()) cout << " ";
+        if (i + 2 < v.size()) 
+            cout << " ";
     }
-    cout << "\nTotal cost is " << total << "\n" << endl;
+    cout << "\nTotal cost is " << total << "\n\n" << endl;
 }
